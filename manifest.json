@@ -11,6 +11,10 @@
       "run_at": "document_start"
     }
   ],
+  "action": {
+    "default_popup": "index.html",
+    "default_title": "Ocultar direccion de MercadoLibre"
+  },
   "icons": {
     "128": "./icons/128.png"
   }
