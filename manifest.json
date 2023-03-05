@@ -1,0 +1,16 @@
+{
+  "name": "Ocultar direccion de MercadoLibre",
+  "version": "1.0",
+  "description": "Oculta la direccion de MercadoLibre cuando se esta en una llamada de video o streaming",
+  "manifest_version": 3,
+  "content_scripts": [
+    {
+      "matches": ["https://*.mercadolibre.com.ar/*"],
+      "js": ["hide-ml-address.js"],
+      "run_at": "document_start"
+    }
+  ],
+  "icons": {
+    "128": "./icons/128.png"
+  }
+}
