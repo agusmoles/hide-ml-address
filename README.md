@@ -1,2 +1,3 @@
-# hide-ml-address
-Hides MercadoLibre address just for safety while streaming, etc
+# Hide MercadoLibre Address😱❌
+
+This extension allows the user to hide the address from the navigation bar when the switch configuration button is enabled
