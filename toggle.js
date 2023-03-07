@@ -12,6 +12,10 @@ checkbox.addEventListener("change", function (e) {
 });
 
 sendMessage("get-hide-ml-address", function (response) {
+  if (chrome.runtime.lastError) {
+    checkbox.checked = true;
+    return;
+  }
   if (response === "true") checkbox.checked = true;
   else checkbox.checked = false;
 });

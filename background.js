@@ -9,9 +9,7 @@ const sendTabsMessage = (message) => {
 };
 
 const setStorage = (value) => {
-  chrome.storage.sync.set({ "hide-ml-address": value }, () => {
-    console.log("Set hide ML Address storage to ", value);
-  });
+  chrome.storage.sync.set({ "hide-ml-address": value });
   sendTabsMessage(value === "true" ? "hide-ml-address" : "show-ml-address");
 };
 
