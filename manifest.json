@@ -15,6 +15,9 @@
     "default_popup": "index.html",
     "default_title": "Ocultar direccion de MercadoLibre"
   },
+  "background": {
+    "service_worker": "background.js"
+  },
   "icons": {
     "128": "./icons/128.png"
   }
