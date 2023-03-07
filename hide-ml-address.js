@@ -1,5 +1,6 @@
 let hideMLAddress = true;
 const modifiedNodes = [];
+const originalInnerHTMLByNode = new Map();
 
 const notifyNodes = () => {
   const customEvent = new CustomEvent("changed-hide-ml-address", {
@@ -31,12 +32,13 @@ chrome.runtime.onMessage.addListener(function (message) {
 
 const setNodeTextContent = (node, flag) => {
   if (flag) node.textContent = "***************";
-  else node.textContent = "asdasdsad" || node.dataset.originalText;
+  else node.innerHTML = originalInnerHTMLByNode.get(node);
 };
 
 const trackNode = (node) => {
   if (modifiedNodes.includes(node)) return;
   modifiedNodes.push(node);
+  originalInnerHTMLByNode.set(node, node.innerHTML);
   setNodeTextContent(node, hideMLAddress);
   node.addEventListener("changed-hide-ml-address", (e) => {
     const { hideMLAddress } = e.detail;
@@ -67,25 +69,12 @@ const clearInnerAddresses = (node) => {
   }
 };
 
-const clearPersonalDataProfile = (node) => {
-  const personalDataProfiles = node.querySelectorAll?.(
-    '[class*="main-container profile"]'
-  );
-
-  if (personalDataProfiles) {
-    personalDataProfiles.forEach((profile) => {
-      trackNode(profile);
-    });
-  }
-};
-
 const observeElement = (document) => {
   const observer = new MutationObserver((mutations) => {
     mutations.forEach((mutation) => {
       mutation.addedNodes.forEach((node) => {
         clearNavbarMLAddress(node);
         clearInnerAddresses(node);
-        clearPersonalDataProfile(node);
 
         if (isMLChangeAddressButton(node)) {
           const changeAddressButton = node;
