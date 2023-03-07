@@ -1,7 +1,7 @@
 {
   "name": "MercadoLibre Address Safety",
   "version": "1.0",
-  "description": "Oculta la direccion de MercadoLibre para que no se pueda ver por otras personas",
+  "description": "Oculta el domicilio seleccionado de MercadoLibre para que no sea visto por otras personas",
   "manifest_version": 3,
   "permissions": ["storage", "tabs"],
   "content_scripts": [
