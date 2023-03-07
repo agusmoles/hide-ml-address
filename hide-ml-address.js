@@ -16,14 +16,18 @@ const notifyNodes = () => {
 };
 
 chrome.runtime.sendMessage("get-hide-ml-address", function (response) {
+  if (chrome.runtime.lastError) {
+    hideMLAddress = true;
+    notifyNodes();
+    return;
+  }
+
   if (response === "true") hideMLAddress = true;
   else hideMLAddress = false;
-
   notifyNodes();
 });
 
 chrome.runtime.onMessage.addListener(function (message) {
-  console.log("Message received in content script:", message);
   if (message === "hide-ml-address") hideMLAddress = true;
   if (message === "show-ml-address") hideMLAddress = false;
 
@@ -33,6 +37,17 @@ chrome.runtime.onMessage.addListener(function (message) {
 const setNodeTextContent = (node, flag) => {
   if (flag) node.textContent = "***************";
   else node.innerHTML = originalInnerHTMLByNode.get(node);
+};
+
+const disableNodeFunctionality = (node) => {
+  node.href = "javascript:void(0)";
+  node.addEventListener("click", (e) => {
+    e.stopPropagation();
+    e.preventDefault();
+    alert(
+      "No puedes cambiar tu dirección de envío, desactiva la extension de proteccion de direccion de Mercado Libre"
+    );
+  });
 };
 
 const trackNode = (node) => {
@@ -52,21 +67,28 @@ const nodeClassNameContains = (node, className) =>
   node.className.includes(className);
 
 const isMLChangeAddressButton = (node) =>
-  nodeClassNameContains(node, "nav-menu-cp nav-menu-cp-logged");
+  nodeClassNameContains(node, "nav-menu-cp nav-menu-cp-logged") ||
+  nodeClassNameContains(node, "ui-pdp-action-modal");
 
 const clearNavbarMLAddress = (node) => {
   if (nodeClassNameContains(node, "nav-menu-link-cp")) trackNode(node);
 };
 
-const clearInnerAddresses = (node) => {
-  const innerAddresses = node.querySelectorAll?.(
-    '[class*="card-block__text--addresses"]'
-  );
-  if (innerAddresses) {
-    innerAddresses.forEach((addressNode) => {
-      trackNode(addressNode);
+const clearNodesByClassName = (node, className) => {
+  const nodes = node.querySelectorAll?.(className);
+  if (nodes) {
+    nodes.forEach((specificNode) => {
+      trackNode(specificNode);
     });
   }
+};
+
+const clearInnerAddresses = (node) => {
+  clearNodesByClassName(node, '[class*="card-block__text--addresses"]');
+};
+
+const clearSendToMLAddress = (node) => {
+  clearNodesByClassName(node, '[class*="ui-pdp-action-modal"]');
 };
 
 const observeElement = (document) => {
@@ -75,18 +97,9 @@ const observeElement = (document) => {
       mutation.addedNodes.forEach((node) => {
         clearNavbarMLAddress(node);
         clearInnerAddresses(node);
+        clearSendToMLAddress(node);
 
-        if (isMLChangeAddressButton(node)) {
-          const changeAddressButton = node;
-
-          changeAddressButton.href = "javascript:void(0)";
-          changeAddressButton.addEventListener("click", (e) => {
-            e.stopPropagation();
-            alert(
-              "No puedes cambiar tu dirección de envío, desactiva la extension de proteccion de direccion de Mercado Libre"
-            );
-          });
-        }
+        if (isMLChangeAddressButton(node)) disableNodeFunctionality(node);
       });
     });
   });
