@@ -1,9 +1,9 @@
 {
-  "name": "Ocultar direccion de MercadoLibre",
+  "name": "MercadoLibre Address Safety",
   "version": "1.0",
-  "description": "Oculta la direccion de MercadoLibre cuando se esta en una llamada de video o streaming",
+  "description": "Oculta la direccion de MercadoLibre para que no se pueda ver por otras personas",
   "manifest_version": 3,
-  "permissions": ["storage"],
+  "permissions": ["storage", "tabs"],
   "content_scripts": [
     {
       "matches": ["https://*.mercadolibre.com.ar/*"],
