@@ -1,12 +1,31 @@
 {
   "name": "MercadoLibre Address Safety",
   "version": "1.0",
-  "description": "Oculta la direccion de MercadoLibre para que no se pueda ver por otras personas",
+  "description": "Oculta el domicilio seleccionado de MercadoLibre para que no sea visto por otras personas",
   "manifest_version": 3,
   "permissions": ["storage", "tabs"],
   "content_scripts": [
     {
-      "matches": ["https://*.mercadolibre.com.ar/*"],
+      "matches": [
+        "https://*.mercadolibre.com.ar/*",
+        "https://*.mercadolibre.com.bo/*",
+        "https://*.mercadolibre.com.br/*",
+        "https://*.mercadolibre.com.cl/*",
+        "https://*.mercadolibre.com.co/*",
+        "https://*.mercadolibre.com.cr/*",
+        "https://*.mercadolibre.com.do/*",
+        "https://*.mercadolibre.com.ec/*",
+        "https://*.mercadolibre.com.gt/*",
+        "https://*.mercadolibre.com.hn/*",
+        "https://*.mercadolibre.com.mx/*",
+        "https://*.mercadolibre.com.ni/*",
+        "https://*.mercadolibre.com.pa/*",
+        "https://*.mercadolibre.com.py/*",
+        "https://*.mercadolibre.com.pe/*",
+        "https://*.mercadolibre.com.sv/*",
+        "https://*.mercadolibre.com.uy/*",
+        "https://*.mercadolibre.com.ve/*"
+      ],
       "js": ["hide-ml-address.js"],
       "run_at": "document_start"
     }
