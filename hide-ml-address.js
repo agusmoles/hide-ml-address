@@ -39,15 +39,22 @@ const setNodeTextContent = (node, flag) => {
   else node.innerHTML = originalInnerHTMLByNode.get(node);
 };
 
-const disableNodeFunctionality = (node) => {
-  node.href = "javascript:void(0)";
-  node.addEventListener("click", (e) => {
-    e.stopPropagation();
-    e.preventDefault();
-    alert(
-      "No puedes cambiar tu dirección de envío, desactiva la extension de proteccion de direccion de Mercado Libre"
-    );
-  });
+const nodeListener = (e) => {
+  e.stopPropagation();
+  e.preventDefault();
+  alert(
+    "No puedes cambiar tu dirección de envío, desactiva la extension de proteccion de direccion de Mercado Libre"
+  );
+};
+
+const setEventListenerToNode = (node, flag) => {
+  if (flag) {
+    node.addEventListener("click", nodeListener);
+    node.href = "javascript:void(0)";
+  } else {
+    node.removeEventListener("click", nodeListener);
+    node.href = originalInnerHTMLByNode.get(node);
+  }
 };
 
 const trackNode = (node) => {
@@ -61,6 +68,19 @@ const trackNode = (node) => {
   });
 };
 
+const disableNodeFunctionality = (node) => {
+  if (modifiedNodes.includes(node)) return;
+  modifiedNodes.push(node);
+
+  originalInnerHTMLByNode.set(node, node.href);
+  setEventListenerToNode(node, hideMLAddress);
+
+  node.addEventListener("changed-hide-ml-address", (e) => {
+    const { hideMLAddress } = e.detail;
+    setEventListenerToNode(node, hideMLAddress);
+  });
+};
+
 const nodeClassNameContains = (node, className) =>
   node.nodeType === Node.ELEMENT_NODE &&
   typeof node.className === "string" &&
@@ -68,6 +88,7 @@ const nodeClassNameContains = (node, className) =>
 
 const isMLChangeAddressButton = (node) =>
   nodeClassNameContains(node, "nav-menu-cp nav-menu-cp-logged") ||
+  nodeClassNameContains(node, "nav-header-cp-anchor") ||
   nodeClassNameContains(node, "ui-pdp-action-modal");
 
 const clearNavbarMLAddress = (node) => {
@@ -75,7 +96,7 @@ const clearNavbarMLAddress = (node) => {
 };
 
 const clearNodesByClassName = (node, className) => {
-  const nodes = node.querySelectorAll?.(className);
+  const nodes = node.querySelectorAll?.(`[class*="${className}"]`);
   if (nodes) {
     nodes.forEach((specificNode) => {
       trackNode(specificNode);
@@ -84,11 +105,11 @@ const clearNodesByClassName = (node, className) => {
 };
 
 const clearInnerAddresses = (node) => {
-  clearNodesByClassName(node, '[class*="card-block__text--addresses"]');
+  clearNodesByClassName(node, "card-block__text--addresses");
 };
 
 const clearSendToMLAddress = (node) => {
-  clearNodesByClassName(node, '[class*="ui-pdp-action-modal"]');
+  clearNodesByClassName(node, "ui-pdp-action-modal");
 };
 
 const observeElement = (document) => {
