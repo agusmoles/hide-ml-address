@@ -3,7 +3,7 @@
   "version": "1.0",
   "description": "Oculta el domicilio seleccionado de MercadoLibre para que no sea visto por otras personas",
   "manifest_version": 3,
-  "permissions": ["storage", "tabs"],
+  "permissions": ["storage"],
   "content_scripts": [
     {
       "matches": [
